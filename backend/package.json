@@ -6,8 +6,8 @@
 },
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
-    "build": "npx prisma migrate deploy"
+    "start": "npx prisma migrate deploy && node src/index.js",
+    "build": "echo 'build ok'"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
