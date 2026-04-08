@@ -8,6 +8,14 @@ export default function Egresos() {
   const [categoria, setCategoria] = useState('insumos')
   const [enviando, setEnviando] = useState(false)
   const [vista, setVista] = useState('nuevo')
+  const [turno, setTurno] = useState(null)
+  const [cargandoTurno, setCargandoTurno] = useState(true)
+
+  useEffect(() => {
+    api.get('/turno/actual')
+      .then(res => { setTurno(res.data); setCargandoTurno(false) })
+      .catch(() => { setTurno(null); setCargandoTurno(false) })
+  }, [])
 
   useEffect(() => {
     if (vista === 'historial') {
@@ -43,28 +51,23 @@ export default function Egresos() {
     { value: 'general', label: 'General' },
   ]
 
+  if (cargandoTurno) return <p style={{ padding: '1rem' }}>Cargando...</p>
+
+  if (!turno) return (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <div style={{ fontSize: '50px', marginBottom: '1rem' }}>🔒</div>
+      <p style={{ color: '#666', fontSize: '16px' }}>No hay turno abierto.</p>
+      <p style={{ color: '#999', fontSize: '14px' }}>Ve a la pestaña Turno para abrir uno.</p>
+    </div>
+  )
+
   return (
     <div style={{ padding: '1rem', maxWidth: '500px', margin: '0 auto' }}>
-
       <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
-        <button
-          onClick={() => setVista('nuevo')}
-          style={{
-            flex: 1, padding: '8px', borderRadius: '8px', border: 'none',
-            background: vista === 'nuevo' ? '#e63946' : '#eee',
-            color: vista === 'nuevo' ? '#fff' : '#333',
-            fontWeight: 'bold', cursor: 'pointer'
-          }}>
+        <button onClick={() => setVista('nuevo')} style={{ flex: 1, padding: '8px', borderRadius: '8px', border: 'none', background: vista === 'nuevo' ? '#e63946' : '#eee', color: vista === 'nuevo' ? '#fff' : '#333', fontWeight: 'bold', cursor: 'pointer' }}>
           Nuevo egreso
         </button>
-        <button
-          onClick={() => setVista('historial')}
-          style={{
-            flex: 1, padding: '8px', borderRadius: '8px', border: 'none',
-            background: vista === 'historial' ? '#e63946' : '#eee',
-            color: vista === 'historial' ? '#fff' : '#333',
-            fontWeight: 'bold', cursor: 'pointer'
-          }}>
+        <button onClick={() => setVista('historial')} style={{ flex: 1, padding: '8px', borderRadius: '8px', border: 'none', background: vista === 'historial' ? '#e63946' : '#eee', color: vista === 'historial' ? '#fff' : '#333', fontWeight: 'bold', cursor: 'pointer' }}>
           Historial
         </button>
       </div>
@@ -73,53 +76,26 @@ export default function Egresos() {
         <div style={{ background: '#f9f9f9', borderRadius: '10px', padding: '16px' }}>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ fontSize: '14px', fontWeight: 'bold', color: '#333' }}>Concepto</label>
-            <input
-              type="text"
-              value={concepto}
-              onChange={e => setConcepto(e.target.value)}
-              placeholder="Ej: Cervezas, limones, sal..."
-              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', marginTop: '4px', boxSizing: 'border-box', fontSize: '14px' }}
-            />
+            <input type="text" value={concepto} onChange={e => setConcepto(e.target.value)} placeholder="Ej: Cervezas, limones, sal..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', marginTop: '4px', boxSizing: 'border-box', fontSize: '14px' }} />
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ fontSize: '14px', fontWeight: 'bold', color: '#333' }}>Monto</label>
-            <input
-              type="number"
-              value={monto}
-              onChange={e => setMonto(e.target.value)}
-              placeholder="$0.00"
-              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', marginTop: '4px', boxSizing: 'border-box', fontSize: '14px' }}
-            />
+            <input type="number" value={monto} onChange={e => setMonto(e.target.value)} placeholder="$0.00" style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', marginTop: '4px', boxSizing: 'border-box', fontSize: '14px' }} />
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ fontSize: '14px', fontWeight: 'bold', color: '#333' }}>Categoría</label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
               {categorias.map(cat => (
-                <button
-                  key={cat.value}
-                  onClick={() => setCategoria(cat.value)}
-                  style={{
-                    padding: '10px', borderRadius: '8px', border: '1px solid #ddd',
-                    background: categoria === cat.value ? '#e63946' : '#fff',
-                    color: categoria === cat.value ? '#fff' : '#333',
-                    fontWeight: 'bold', cursor: 'pointer', fontSize: '13px'
-                  }}>
+                <button key={cat.value} onClick={() => setCategoria(cat.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ddd', background: categoria === cat.value ? '#e63946' : '#fff', color: categoria === cat.value ? '#fff' : '#333', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>
                   {cat.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <button
-            onClick={registrarEgreso}
-            disabled={enviando}
-            style={{
-              width: '100%', padding: '14px', borderRadius: '10px', border: 'none',
-              background: '#e63946', color: '#fff', fontSize: '16px',
-              fontWeight: 'bold', cursor: 'pointer'
-            }}>
+          <button onClick={registrarEgreso} disabled={enviando} style={{ width: '100%', padding: '14px', borderRadius: '10px', border: 'none', background: '#e63946', color: '#fff', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
             {enviando ? 'Registrando...' : 'Registrar egreso'}
           </button>
         </div>

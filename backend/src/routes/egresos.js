@@ -10,9 +10,9 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { concepto, monto, categoria } = req.body
+  const { concepto, monto, categoria, turnoId } = req.body
   const egreso = await prisma.egreso.create({
-    data: { concepto, monto, categoria }
+    data: { concepto, monto, categoria, turnoId }
   })
   res.json(egreso)
 })

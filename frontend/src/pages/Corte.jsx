@@ -4,15 +4,35 @@ import api from '../api/axios'
 export default function Corte() {
   const [datos, setDatos] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [turno, setTurno] = useState(null)
+  const [cargandoTurno, setCargandoTurno] = useState(true)
 
   useEffect(() => {
-    api.get('/corte').then(res => {
-      setDatos(res.data)
-      setCargando(false)
-    })
+    api.get('/turno/actual')
+      .then(res => { setTurno(res.data); setCargandoTurno(false) })
+      .catch(() => { setTurno(null); setCargandoTurno(false) })
   }, [])
 
+  useEffect(() => {
+    if (turno) {
+      api.get('/corte')
+        .then(res => { setDatos(res.data); setCargando(false) })
+        .catch(() => setCargando(false))
+    }
+  }, [turno])
+
+  if (cargandoTurno) return <p style={{ padding: '1rem' }}>Cargando...</p>
+
+  if (!turno) return (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <div style={{ fontSize: '50px', marginBottom: '1rem' }}>🔒</div>
+      <p style={{ color: '#666', fontSize: '16px' }}>No hay turno abierto.</p>
+      <p style={{ color: '#999', fontSize: '14px' }}>Ve a la pestaña Turno para abrir uno.</p>
+    </div>
+  )
+
   if (cargando) return <p style={{ padding: '1rem' }}>Cargando corte...</p>
+  if (!datos) return <p style={{ padding: '1rem' }}>Error al cargar el corte.</p>
 
   return (
     <div style={{ padding: '1rem', maxWidth: '500px', margin: '0 auto' }}>
@@ -31,15 +51,19 @@ export default function Corte() {
         </div>
       </div>
 
-      <div style={{
-        background: datos.ganancia >= 0 ? '#e8f5e9' : '#ffebee',
-        borderRadius: '10px', padding: '20px', marginBottom: '1.5rem', textAlign: 'center'
-      }}>
+      <div style={{ background: '#f3f4f6', borderRadius: '10px', padding: '16px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Fondo inicial</span>
+        <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#333' }}>${turno.fondoInicial}</span>
+      </div>
+
+      <div style={{ background: '#e3f2fd', borderRadius: '10px', padding: '16px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '14px', color: '#1565c0', fontWeight: 'bold' }}>Efectivo esperado en caja</span>
+        <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#1565c0' }}>${turno.fondoInicial + datos.totalVentas - datos.totalEgresos}</span>
+      </div>
+
+      <div style={{ background: datos.ganancia >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '10px', padding: '20px', marginBottom: '1.5rem', textAlign: 'center' }}>
         <div style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Ganancia del día</div>
-        <div style={{
-          fontSize: '36px', fontWeight: 'bold',
-          color: datos.ganancia >= 0 ? '#2e7d32' : '#c62828'
-        }}>
+        <div style={{ fontSize: '36px', fontWeight: 'bold', color: datos.ganancia >= 0 ? '#2e7d32' : '#c62828' }}>
           ${datos.ganancia}
         </div>
       </div>

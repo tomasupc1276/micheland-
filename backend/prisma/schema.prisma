@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Turno {
+  id           Int       @id @default(autoincrement())
+  abiertaEn    DateTime  @default(now())
+  cerradaEn    DateTime?
+  fondoInicial Float     @default(0)
+  totalVentas  Float     @default(0)
+  totalEgresos Float     @default(0)
+  ganancia     Float     @default(0)
+  estado       String    @default("abierto")
+}
+
 model Venta {
   id         Int         @id @default(autoincrement())
   total      Float

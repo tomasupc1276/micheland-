@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Turno" ADD COLUMN     "fondoInicial" DOUBLE PRECISION NOT NULL DEFAULT 0;

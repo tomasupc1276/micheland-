@@ -4,7 +4,8 @@ export default function NavBar() {
   const location = useLocation()
 
   const links = [
-    { to: '/', label: 'Ventas', icon: '🧾' },
+    { to: '/', label: 'Turno', icon: '🔑' },
+    { to: '/ventas', label: 'Ventas', icon: '🧾' },
     { to: '/egresos', label: 'Egresos', icon: '💸' },
     { to: '/corte', label: 'Corte', icon: '📊' },
   ]

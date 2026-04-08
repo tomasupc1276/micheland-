@@ -11,12 +11,13 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { total, metodoPago, nota, items } = req.body
+  const { total, metodoPago, nota, items, turnoId } = req.body
   const venta = await prisma.venta.create({
     data: {
       total,
       metodoPago,
       nota,
+      turnoId,
       items: {
         create: items
       }
