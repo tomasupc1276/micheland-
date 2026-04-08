@@ -3,7 +3,15 @@ const router = express.Router()
 const prisma = require('../db')
 
 router.get('/', async (req, res) => {
+  const turno = await prisma.turno.findFirst({
+    where: { estado: 'abierto' },
+    orderBy: { abiertaEn: 'desc' }
+  })
+
+  if (!turno) return res.json([])
+
   const ventas = await prisma.venta.findMany({
+    where: { creadoEn: { gte: turno.abiertaEn } },
     include: { items: true },
     orderBy: { creadoEn: 'desc' }
   })
@@ -11,8 +19,18 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/cocina', async (req, res) => {
+  const turno = await prisma.turno.findFirst({
+    where: { estado: 'abierto' },
+    orderBy: { abiertaEn: 'desc' }
+  })
+
+  if (!turno) return res.json([])
+
   const ventas = await prisma.venta.findMany({
-    where: { estado: { in: ['pendiente', 'en-preparacion'] } },
+    where: {
+      estado: { in: ['pendiente', 'en-preparacion'] },
+      creadoEn: { gte: turno.abiertaEn }
+    },
     include: { items: true },
     orderBy: { creadoEn: 'asc' }
   })
