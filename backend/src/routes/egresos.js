@@ -3,7 +3,15 @@ const router = express.Router()
 const prisma = require('../db')
 
 router.get('/', async (req, res) => {
+  const turno = await prisma.turno.findFirst({
+    where: { estado: 'abierto' },
+    orderBy: { abiertaEn: 'desc' }
+  })
+
+  if (!turno) return res.json([])
+
   const egresos = await prisma.egreso.findMany({
+    where: { creadoEn: { gte: turno.abiertaEn } },
     orderBy: { creadoEn: 'desc' }
   })
   res.json(egresos)
