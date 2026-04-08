@@ -23,6 +23,7 @@ model Venta {
   total      Float
   metodoPago String      @default("efectivo")
   nota       String?
+  estado     String      @default("pendiente")
   creadoEn   DateTime    @default(now())
   items      ItemVenta[]
 }

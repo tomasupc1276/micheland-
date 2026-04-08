@@ -4,19 +4,18 @@ import Ventas from './pages/Ventas'
 import Egresos from './pages/Egresos'
 import Corte from './pages/Corte'
 import Turno from './pages/Turno'
+import Cocina from './pages/Cocina'
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div style={{ paddingBottom: '70px' }}>
-        <Routes>
-          <Route path="/" element={<Turno />} />
-          <Route path="/ventas" element={<Ventas />} />
-          <Route path="/egresos" element={<Egresos />} />
-          <Route path="/corte" element={<Corte />} />
-        </Routes>
-      </div>
-      <NavBar />
+      <Routes>
+        <Route path="/cocina" element={<Cocina />} />
+        <Route path="/" element={<div style={{ paddingBottom: '70px' }}><Turno /><NavBar /></div>} />
+        <Route path="/ventas" element={<div style={{ paddingBottom: '70px' }}><Ventas /><NavBar /></div>} />
+        <Route path="/egresos" element={<div style={{ paddingBottom: '70px' }}><Egresos /><NavBar /></div>} />
+        <Route path="/corte" element={<div style={{ paddingBottom: '70px' }}><Corte /><NavBar /></div>} />
+      </Routes>
     </BrowserRouter>
   )
 }
