@@ -8,6 +8,7 @@ export default function NavBar() {
     { to: '/ventas', label: 'Ventas', icon: '🧾' },
     { to: '/egresos', label: 'Egresos', icon: '💸' },
     { to: '/corte', label: 'Corte', icon: '📊' },
+    { to: '/cocina', label: 'Cocina', icon: '👨‍🍳' },
   ]
 
   return (
