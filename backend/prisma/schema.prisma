@@ -18,6 +18,13 @@ model Turno {
   estado       String    @default("abierto")
 }
 
+model Mesa {
+  id       Int     @id @default(autoincrement())
+  numero   Int
+  estado   String  @default("abierta")
+  ventas   Venta[]
+}
+
 model Venta {
   id         Int         @id @default(autoincrement())
   total      Float
@@ -26,6 +33,8 @@ model Venta {
   estado     String      @default("pendiente")
   creadoEn   DateTime    @default(now())
   items      ItemVenta[]
+  mesaId     Int?
+  mesa       Mesa?       @relation(fields: [mesaId], references: [id])
 }
 
 model ItemVenta {

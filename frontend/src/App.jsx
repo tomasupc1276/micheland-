@@ -5,6 +5,7 @@ import Egresos from './pages/Egresos'
 import Corte from './pages/Corte'
 import Turno from './pages/Turno'
 import Cocina from './pages/Cocina'
+import Mesas from './pages/Mesas'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/egresos" element={<Egresos />} />
           <Route path="/corte" element={<Corte />} />
           <Route path="/cocina" element={<Cocina />} />
+          <Route path="/mesas" element={<Mesas />} />
         </Routes>
       </div>
       <NavBar />
