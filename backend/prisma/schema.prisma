@@ -33,6 +33,7 @@ model ItemVenta {
   nombre   String
   precio   Float
   cantidad Int
+  nota     String @default("")
   ventaId  Int
   venta    Venta  @relation(fields: [ventaId], references: [id])
 }
