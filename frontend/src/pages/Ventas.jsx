@@ -174,13 +174,13 @@ export default function Ventas() {
           </div>
 
           {[
-            { key: 'gaseosa', label: 'Micheladas con gaseosa' },
-            { key: 'cerveza', label: 'Micheladas con cerveza' },
+            { key: 'premium', label: 'Micheladas Premium' },
+            { key: 'basica', label: 'Micheladas Básicas' },
             { key: 'adicional', label: 'Adicionales' },
           ].map(cat => {
             const productosFiltrados = productos.filter(p =>
               p.categoria === cat.key &&
-              p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+              p.nombre.toLowerCase().startsWith(busqueda.toLowerCase())
             )
             if (productosFiltrados.length === 0) return null
             return (
