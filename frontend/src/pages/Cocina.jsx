@@ -57,9 +57,16 @@ export default function Cocina() {
 
                 <div style={{ marginBottom: '12px' }}>
                   {pedido.items.map(item => (
-                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid rgba(0,0,0,0.08)', fontSize: '15px', color: '#333' }}>
-                      <span>{item.nombre}</span>
-                      <span style={{ fontWeight: 'bold' }}>x{item.cantidad}</span>
+                    <div key={item.id} style={{ padding: '6px 0', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '15px', color: '#333' }}>
+                        <span>{item.nombre}</span>
+                        <span style={{ fontWeight: 'bold' }}>x{item.cantidad}</span>
+                      </div>
+                      {item.nota && (
+                        <div style={{ fontSize: '13px', color: '#e65100', marginTop: '2px' }}>
+                          📝 {item.nota}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
