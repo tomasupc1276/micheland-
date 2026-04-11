@@ -19,6 +19,7 @@ export default function Ventas() {
   const [cargandoTurno, setCargandoTurno] = useState(true)
   const [modalProducto, setModalProducto] = useState(null)
   const [notaModal, setNotaModal] = useState('')
+  const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
     api.get('/turno/actual')
@@ -162,25 +163,42 @@ export default function Ventas() {
 
       {vista === 'nueva' && (
         <>
+          <div style={{ marginBottom: '1rem' }}>
+            <input
+              type="text"
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+              placeholder="Buscar producto..."
+              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', boxSizing: 'border-box', fontSize: '14px' }}
+            />
+          </div>
+
           {[
             { key: 'gaseosa', label: 'Micheladas con gaseosa' },
             { key: 'cerveza', label: 'Micheladas con cerveza' },
             { key: 'adicional', label: 'Adicionales' },
-          ].map(cat => (
-            <div key={cat.key} style={{ marginBottom: '1.5rem' }}>
-              <h2 style={{ marginBottom: '0.5rem', color: '#333', fontSize: '15px', borderBottom: '2px solid #e63946', paddingBottom: '4px' }}>
-                {cat.label}
-              </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                {productos.filter(p => p.categoria === cat.key).map(p => (
-                  <button key={p.id} onClick={() => seleccionarProducto(p)} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #ddd', background: '#fff', cursor: 'pointer', textAlign: 'left', color: '#333' }}>
-                    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{p.nombre}</div>
-                    <div style={{ color: '#e63946', fontSize: '13px' }}>${p.precio.toLocaleString('es-CO')}</div>
-                  </button>
-                ))}
+          ].map(cat => {
+            const productosFiltrados = productos.filter(p =>
+              p.categoria === cat.key &&
+              p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+            )
+            if (productosFiltrados.length === 0) return null
+            return (
+              <div key={cat.key} style={{ marginBottom: '1.5rem' }}>
+                <h2 style={{ marginBottom: '0.5rem', color: '#333', fontSize: '15px', borderBottom: '2px solid #e63946', paddingBottom: '4px' }}>
+                  {cat.label}
+                </h2>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  {productosFiltrados.map(p => (
+                    <button key={p.id} onClick={() => seleccionarProducto(p)} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #ddd', background: '#fff', cursor: 'pointer', textAlign: 'left', color: '#333' }}>
+                      <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{p.nombre}</div>
+                      <div style={{ color: '#e63946', fontSize: '13px' }}>${p.precio.toLocaleString('es-CO')}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
 
           {carrito.length > 0 && (
             <>
