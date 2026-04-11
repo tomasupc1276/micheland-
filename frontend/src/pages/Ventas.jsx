@@ -256,7 +256,7 @@ export default function Ventas() {
               <div key={v.id} style={{ background: '#f9f9f9', borderRadius: '10px', padding: '12px', marginBottom: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontWeight: 'bold', color: '#333' }}>#{v.id}</span>
-                  <span style={{ color: '#e63946', fontWeight: 'bold' }}>${v.total.toLocaleString('es-CO')}</span>
+                  <span style={{ color: '#2e7d32', fontWeight: 'bold' }}>${v.total.toLocaleString('es-CO')}</span>
                 </div>
                 <div style={{ fontSize: '13px', color: '#666' }}>{v.metodoPago} — {new Date(v.creadoEn).toLocaleString('es-MX')}</div>
                 {v.items.map(item => (
