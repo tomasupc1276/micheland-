@@ -89,14 +89,24 @@ router.delete('/:mesaId/items/:itemId', async (req, res) => {
 
   if (!item) return res.status(404).json({ error: 'Item no encontrado' })
 
-  await prisma.itemVenta.delete({
-    where: { id: parseInt(req.params.itemId) }
-  })
-
-  await prisma.venta.update({
-    where: { id: item.ventaId },
-    data: { total: { decrement: item.precio * item.cantidad } }
-  })
+  if (item.cantidad > 1) {
+    await prisma.itemVenta.update({
+      where: { id: parseInt(req.params.itemId) },
+      data: { cantidad: { decrement: 1 } }
+    })
+    await prisma.venta.update({
+      where: { id: item.ventaId },
+      data: { total: { decrement: item.precio } }
+    })
+  } else {
+    await prisma.itemVenta.delete({
+      where: { id: parseInt(req.params.itemId) }
+    })
+    await prisma.venta.update({
+      where: { id: item.ventaId },
+      data: { total: { decrement: item.precio } }
+    })
+  }
 
   res.json({ ok: true })
 })
