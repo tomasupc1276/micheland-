@@ -118,6 +118,19 @@ export default function Mesas() {
     setProcesando(false)
   }
 
+  const eliminarItem = async (mesaId, itemId) => {
+    if (!confirm('¿Eliminar este item?')) return
+    try {
+      await api.delete(`/mesas/${mesaId}/items/${itemId}`)
+      const res = await api.get('/mesas')
+      const mesa = res.data.find(m => m.id === mesaActiva.id)
+      if (mesa) setMesaActiva(mesa)
+      cargarMesas()
+    } catch (e) {
+      alert('Error al eliminar item')
+    }
+  }
+
   const totalCarrito = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0)
   const totalMesa = mesaActiva?.ventas?.reduce((sum, v) => sum + v.total, 0) || 0
 
@@ -176,16 +189,21 @@ export default function Mesas() {
       {mesaActiva.ventas?.length > 0 && (
         <div style={{ background: '#f9f9f9', borderRadius: '10px', padding: '12px', marginBottom: '1rem' }}>
           <div style={{ fontWeight: 'bold', color: '#333', marginBottom: '8px', fontSize: '14px' }}>Pedidos anteriores</div>
-          {mesaActiva.ventas.map(v => (
-            <div key={v.id} style={{ borderBottom: '1px solid #eee', paddingBottom: '8px', marginBottom: '8px' }}>
-              {v.items.map(item => (
-                <div key={item.id} style={{ fontSize: '13px', color: '#444', display: 'flex', justifyContent: 'space-between' }}>
-                  <span>{item.cantidad}x {item.nombre}{item.nota ? ` (${item.nota})` : ''}</span>
-                  <span>${(item.precio * item.cantidad).toLocaleString('es-CO')}</span>
-                </div>
-              ))}
-            </div>
-          ))}
+            {mesaActiva.ventas.map(v => (
+              <div key={v.id} style={{ borderBottom: '1px solid #eee', paddingBottom: '8px', marginBottom: '8px' }}>
+                {v.items.map(item => (
+                  <div key={item.id} style={{ fontSize: '13px', color: '#444', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span style={{ flex: 1 }}>{item.cantidad}x {item.nombre}{item.nota ? ` (${item.nota})` : ''}</span>
+                    <span style={{ marginRight: '8px' }}>${(item.precio * item.cantidad).toLocaleString('es-CO')}</span>
+                    <button
+                      onClick={() => eliminarItem(mesaActiva.id, item.id)}
+                      style={{ width: '24px', height: '24px', borderRadius: '50%', border: 'none', background: '#e63946', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ))}
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', color: '#2e7d32' }}>
             <span>Total acumulado</span>
             <span>${totalMesa.toLocaleString('es-CO')}</span>

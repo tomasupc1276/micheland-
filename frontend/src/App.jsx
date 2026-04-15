@@ -20,7 +20,7 @@ export default function App() {
           <Route path="/mesas" element={<Mesas />} />
         </Routes>
       </div>
-      <NavBar />
+      <NavBar/>
     </BrowserRouter>
   )
 }

@@ -81,4 +81,24 @@ router.delete('/:id', async (req, res) => {
   res.json({ ok: true })
 })
 
+router.delete('/:mesaId/items/:itemId', async (req, res) => {
+  const item = await prisma.itemVenta.findUnique({
+    where: { id: parseInt(req.params.itemId) },
+    include: { venta: true }
+  })
+
+  if (!item) return res.status(404).json({ error: 'Item no encontrado' })
+
+  await prisma.itemVenta.delete({
+    where: { id: parseInt(req.params.itemId) }
+  })
+
+  await prisma.venta.update({
+    where: { id: item.ventaId },
+    data: { total: { decrement: item.precio * item.cantidad } }
+  })
+
+  res.json({ ok: true })
+})
+
 module.exports = router
